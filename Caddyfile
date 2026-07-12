@@ -1,0 +1,7 @@
+demo.example.com {
+    reverse_proxy api:3000
+    encode gzip
+    log {
+        output file /data/access.log
+    }
+}

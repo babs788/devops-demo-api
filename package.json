@@ -1,0 +1,17 @@
+{
+  "name": "devops-demo-api",
+  "version": "1.0.0",
+  "description": "Demo API used to showcase a full CI/CD pipeline: test, build, containerize, deploy.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
+  }
+}
