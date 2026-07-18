@@ -1,49 +1,64 @@
 # DevOps demo API — CI/CD pipeline showcase
 
-A small Express API used to demonstrate a full production-style CI/CD
-pipeline: automated testing, Docker image build, and deployment to a
-remote server via GitHub Actions.
+A small Express API used to demonstrate a production-style CI/CD setup:
+automated testing and Docker image builds via GitHub Actions, with
+continuous deployment to a live environment on every push to `main`.
 
-This mirrors the deployment pattern I use in production environments —
-Dockerized services behind a Caddy reverse proxy, deployed via GitHub
-Actions on every push to `main`.
+**Live demo:** https://devops-api-xhkk.onrender.com/health
 
-## Pipeline stages
+## Architecture
 
-1. **Test** — installs dependencies and runs the Jest test suite
-2. **Build and push** — builds a Docker image and pushes it to a
-   container registry, tagged with both `latest` and the commit SHA
-3. **Deploy** — connects to the target server over SSH and redeploys
-   the updated container with `docker compose`
+This project uses two independent, complementary systems — a common
+real-world pattern:
+
+1. **Continuous Integration — GitHub Actions**
+   Runs automatically on every push and pull request against `main`:
+   - Installs dependencies and runs the Jest test suite
+   - Builds a Docker image and pushes it to Docker Hub, tagged with
+     both `latest` and the commit SHA
+
+2. **Continuous Deployment — Render**
+   Connected directly to this repository via a GitHub webhook. Every
+   push to `main` triggers Render to pull the latest code, build the
+   Docker image from the same `Dockerfile`, and deploy it live —
+   independently of the GitHub Actions run.
 
 See [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) for
-the full pipeline definition.
+the CI pipeline definition.
 
 ## Stack
 
 - Node.js / Express
 - Jest + Supertest for testing
-- Docker + Docker Compose
-- Caddy as reverse proxy (automatic HTTPS)
-- GitHub Actions for CI/CD
+- Docker for containerization
+- GitHub Actions for CI (test, build, push)
+- Render for CD (auto-deploy on push)
+- Caddy config included for self-hosted reverse-proxy deployments
+  (e.g. a VPS), as an alternative to Render
 
 ## Running locally
 
-```bash
+\`\`\`bash
 npm install
 npm test
 npm start
-```
+\`\`\`
 
 ## Running with Docker
 
-```bash
+\`\`\`bash
 docker compose up --build
-```
+\`\`\`
+
+This uses `docker-compose.yml` with a Caddy reverse proxy — useful if
+deploying to your own server (EC2, Oracle Cloud, a VPS, etc.) instead
+of a platform like Render.
 
 ## Notes
 
-Deployment target details (host, SSH key, registry credentials) are
-supplied via GitHub Actions secrets and are not present in this
-repository. The `Caddyfile` domain is a placeholder — replace with
-your own domain before deploying.
+- The live Render deployment redeploys automatically on every push to
+  `main` — no manual steps required.
+- Docker Hub credentials are supplied via GitHub Actions secrets and
+  are not present in this repository.
+- The `Caddyfile` domain is a placeholder for self-hosted deployments —
+  replace with your own domain if using that path instead of Render.
