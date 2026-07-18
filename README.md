@@ -20,18 +20,17 @@ real-world pattern:
 2. **Continuous Deployment — Render**
    Connected directly to this repository via a GitHub webhook. Every
    push to `main` triggers Render to pull the latest code, build the
-   Docker image from the same `Dockerfile`, and deploy it live —
-   independently of the GitHub Actions run.
+   Docker image from the same `Dockerfile`, and deploy it live.
 
 See [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) for
-the CI pipeline definition.
+the full CI pipeline definition — both jobs run green on every push.
 
 ## Stack
 
 - Node.js / Express
 - Jest + Supertest for testing
 - Docker for containerization
-- GitHub Actions for CI (test, build, push)
+- GitHub Actions for CI (test, build, push to Docker Hub)
 - Render for CD (auto-deploy on push)
 - Caddy config included for self-hosted reverse-proxy deployments
   (e.g. a VPS), as an alternative to Render
